@@ -3,6 +3,8 @@ const Protocols = {
     VLESS: 'vless',
     TROJAN: 'trojan',
     SHADOWSOCKS: 'shadowsocks',
+    HYSTERIA2: 'hysteria2',
+    TUIC: 'tuic',
     DOKODEMO: 'dokodemo-door',
     SOCKS: 'socks',
     HTTP: 'http',
@@ -1440,6 +1442,8 @@ Inbound.Settings = class extends XrayCommonClass {
             case Protocols.VLESS: return new Inbound.VLESSSettings(protocol);
             case Protocols.TROJAN: return new Inbound.TrojanSettings(protocol);
             case Protocols.SHADOWSOCKS: return new Inbound.ShadowsocksSettings(protocol);
+            case Protocols.HYSTERIA2: return new Inbound.Hysteria2Settings(protocol);
+            case Protocols.TUIC: return new Inbound.TuicSettings(protocol);
             case Protocols.DOKODEMO: return new Inbound.DokodemoSettings(protocol);
             case Protocols.SOCKS: return new Inbound.SocksSettings(protocol);
             case Protocols.HTTP: return new Inbound.HttpSettings(protocol);
@@ -1453,6 +1457,8 @@ Inbound.Settings = class extends XrayCommonClass {
             case Protocols.VLESS: return Inbound.VLESSSettings.fromJson(json);
             case Protocols.TROJAN: return Inbound.TrojanSettings.fromJson(json);
             case Protocols.SHADOWSOCKS: return Inbound.ShadowsocksSettings.fromJson(json);
+            case Protocols.HYSTERIA2: return Inbound.Hysteria2Settings.fromJson(json);
+            case Protocols.TUIC: return Inbound.TuicSettings.fromJson(json);
             case Protocols.DOKODEMO: return Inbound.DokodemoSettings.fromJson(json);
             case Protocols.SOCKS: return Inbound.SocksSettings.fromJson(json);
             case Protocols.HTTP: return Inbound.HttpSettings.fromJson(json);
@@ -1745,6 +1751,98 @@ Inbound.ShadowsocksSettings = class extends Inbound.Settings {
             password: this.password,
             network: this.network,
         };
+    }
+};
+
+Inbound.Hysteria2Settings = class extends Inbound.Settings {
+    constructor(protocol,
+        clients = [new Inbound.Hysteria2Settings.Client()],
+        ignoreClientBandwidth = false,
+        masquerade = ""
+    ) {
+        super(protocol);
+        this.clients = clients;
+        this.ignoreClientBandwidth = ignoreClientBandwidth;
+        this.masquerade = masquerade;
+    }
+
+    static fromJson(json = {}) {
+        const clients = [];
+        for (const c of (json.clients || [])) {
+            clients.push(Inbound.Hysteria2Settings.Client.fromJson(c));
+        }
+        return new Inbound.Hysteria2Settings(
+            Protocols.HYSTERIA2,
+            clients.length ? clients : [new Inbound.Hysteria2Settings.Client()],
+            ObjectUtil.isEmpty(json.ignoreClientBandwidth) ? false : !!json.ignoreClientBandwidth,
+            json.masquerade || "",
+        );
+    }
+
+    toJson() {
+        return {
+            clients: Inbound.Hysteria2Settings.toJsonArray(this.clients),
+            ignoreClientBandwidth: this.ignoreClientBandwidth,
+            masquerade: this.masquerade,
+        };
+    }
+};
+Inbound.Hysteria2Settings.Client = class extends XrayCommonClass {
+    constructor(password = RandomUtil.randomSeq(12), email = "") {
+        super();
+        this.password = password;
+        this.email = email;
+    }
+
+    static fromJson(json = {}) {
+        return new Inbound.Hysteria2Settings.Client(
+            json.password || RandomUtil.randomSeq(12),
+            json.email || "",
+        );
+    }
+};
+
+Inbound.TuicSettings = class extends Inbound.Settings {
+    constructor(protocol,
+        users = [new Inbound.TuicSettings.User()],
+        congestionControl = "bbr"
+    ) {
+        super(protocol);
+        this.users = users;
+        this.congestion_control = congestionControl;
+    }
+
+    static fromJson(json = {}) {
+        const users = [];
+        for (const u of (json.users || [])) {
+            users.push(Inbound.TuicSettings.User.fromJson(u));
+        }
+        return new Inbound.TuicSettings(
+            Protocols.TUIC,
+            users.length ? users : [new Inbound.TuicSettings.User()],
+            json.congestion_control || "bbr",
+        );
+    }
+
+    toJson() {
+        return {
+            users: Inbound.TuicSettings.toJsonArray(this.users),
+            congestion_control: this.congestion_control,
+        };
+    }
+};
+Inbound.TuicSettings.User = class extends XrayCommonClass {
+    constructor(uuid = RandomUtil.randomUUID(), password = RandomUtil.randomSeq(12)) {
+        super();
+        this.uuid = uuid;
+        this.password = password;
+    }
+
+    static fromJson(json = {}) {
+        return new Inbound.TuicSettings.User(
+            json.uuid || RandomUtil.randomUUID(),
+            json.password || RandomUtil.randomSeq(12),
+        );
     }
 };
 

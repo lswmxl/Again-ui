@@ -15,6 +15,8 @@ const (
 	Http        Protocol = "http"
 	Trojan      Protocol = "trojan"
 	Shadowsocks Protocol = "shadowsocks"
+	Hysteria2   Protocol = "hysteria2"
+	Tuic        Protocol = "tuic"
 )
 
 type User struct {

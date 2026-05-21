@@ -1,0 +1,18 @@
+{{define "form/tuic"}}
+<a-divider orientation="left">TUIC</a-divider>
+<a-form layout="inline">
+    <a-form-item label="UUID">
+        <a-input v-model.trim="inbound.settings.users[0].uuid"></a-input>
+    </a-form-item>
+    <a-form-item label="密码">
+        <a-input v-model.trim="inbound.settings.users[0].password"></a-input>
+    </a-form-item>
+    <a-form-item label="拥塞控制">
+        <a-select v-model="inbound.settings.congestion_control" style="width: 160px;">
+            <a-select-option value="bbr">bbr</a-select-option>
+            <a-select-option value="cubic">cubic</a-select-option>
+            <a-select-option value="reno">reno</a-select-option>
+        </a-select>
+    </a-form-item>
+</a-form>
+{{end}}

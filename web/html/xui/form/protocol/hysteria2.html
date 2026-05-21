@@ -1,0 +1,17 @@
+{{define "form/hysteria2"}}
+<a-divider orientation="left">Hysteria2</a-divider>
+<a-form layout="inline">
+    <a-form-item label="密码">
+        <a-input v-model.trim="inbound.settings.clients[0].password"></a-input>
+    </a-form-item>
+    <a-form-item label="邮箱(可选)">
+        <a-input v-model.trim="inbound.settings.clients[0].email"></a-input>
+    </a-form-item>
+    <a-form-item label="忽略客户端带宽">
+        <a-switch v-model="inbound.settings.ignoreClientBandwidth"></a-switch>
+    </a-form-item>
+    <a-form-item label="伪装地址(可选)">
+        <a-input v-model.trim="inbound.settings.masquerade" placeholder="https://example.com"></a-input>
+    </a-form-item>
+</a-form>
+{{end}}

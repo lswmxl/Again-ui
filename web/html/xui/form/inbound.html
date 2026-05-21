@@ -74,6 +74,16 @@
     {{template "form/shadowsocks"}}
 </template>
 
+<!-- hysteria2 -->
+<template v-if="inbound.protocol === Protocols.HYSTERIA2">
+    {{template "form/hysteria2"}}
+</template>
+
+<!-- tuic -->
+<template v-if="inbound.protocol === Protocols.TUIC">
+    {{template "form/tuic"}}
+</template>
+
 <!-- dokodemo-door -->
 <template v-if="inbound.protocol === Protocols.DOKODEMO">
     {{template "form/dokodemo"}}
